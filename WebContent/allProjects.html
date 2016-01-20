@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Projects List</title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<script src="js/bootstrap.min.js"></script>
+<link href="css/styles.css" rel="stylesheet">
+<script>
+	$(document)
+			.ready(
+					function() {
+						$("#div2").hide();
+						$("#header").load("header.html");
+						$("#footer").load("footer.html");
+
+						jQuery
+								.ajax({
+									url : "http://10.9.220.19:8080/prj-initworkmatrix/rest/projects",
+									type : "GET",
+									dataType : "json",
+									contentType : "application/json;charset=utf-8",
+									crossDomain : true,
+									beforeSend : function(request) {
+										request.setRequestHeader("apikey",
+												'iwm-123');
+									},
+									success : function(data) {
+										var sortedNames = [];
+										$(data.links)
+												.each(
+														function(index) {
+															sortedNames
+																	.push(data.links[index].name);
+														});
+										sortedNames.sort();
+										$(data.links)
+												.each(
+														function(index) {
+															var str = data.links[index].href;
+															var id = str
+																	.substring(str
+																			.lastIndexOf('/') + 1);
+															$("#prjDiv")
+																	.append(
+																			"<h4><a href='prjDetail.html?id="
+																					+ id
+																					+ "'>"
+																					+ data.links[index].name
+																					+ "</a></h4>");
+															$("#prjDiv")
+																	.append(
+																			"<hr>");
+															$('#namesDataList1')
+																	.append(
+																			"<option>"
+																					+ sortedNames[index]
+																					+ "</option>");
+															$('#namesDataList2')
+																	.append(
+																			"<option>"
+																					+ sortedNames[index]
+																					+ "</option>");
+														});
+									}
+								});
+					});
+
+	function onSearchClick1() {
+
+		var name = document.getElementById("inputName1").value;
+		var client = document.getElementById("inputClient1").value;
+
+		var finalURL = "searchProject.html?name=" + name + "&&client=" + client
+				+ "&&status=" + "" + "&&employeeName=" + "";
+		document.getElementById("searchLink1").href = finalURL;
+	}
+	function onSearchClick2() {
+
+		var name = document.getElementById("inputName2").value;
+		var client = document.getElementById("inputClient2").value;
+		var status = document.getElementById("inputStatus2").value;
+		var empName = document.getElementById("inputEmpName2").value;
+
+		var finalURL = "searchProject.html?name=" + name + "&&client=" + client
+				+ "&&status=" + status + "&&employeeName=" + empName;
+		document.getElementById("searchLink2").href = finalURL;
+	}
+	$(function() {
+
+		$('#reset1').click(
+				function() {
+					$(':input', '#form1').not(
+							':button, :submit, :reset, :hidden').val('')
+							.removeAttr('checked').removeAttr('selected');
+				});
+		$('#reset2').click(
+				function() {
+					$(':input', '#form2').not(
+							':button, :submit, :reset, :hidden').val('')
+							.removeAttr('checked').removeAttr('selected');
+				});
+
+	});
+	function advSearchClick() {
+
+		$("#div2").show();
+		$("#div1").hide();
+	};
+
+	function basicSearchClick() {
+
+		$("#div1").show();
+		$("#div2").hide();
+	};
+</script>
+</head>
+
+
+<body>
+	<div id="header"></div>
+
+	<div id="content" style="background-color: #E6E6E6; margin-top: -90px">
+		<div class="container marketing" style="background-color: white;">
+			<div style="margin: 20px;">
+				<h1 style="margin-top: 100px">Projects</h1>
+				<br /> <br />
+
+				<div class="panel panel-primary"
+					style="background-color: #E6E6E6; box-shadow: inset 1px -1px 1px #444, inset -1px 1px 1px #444;">
+
+					<div class="panel-body" style="margin-top: 30px" id="div1">
+						<form class="form-inline" id="form1">
+							<div class="form-group">
+								<label class="sr-only" for="inputName1">Name</label> <input
+									type="text" class="form-control" id="inputName1"
+									list="namesDataList1" placeholder="Project Name">
+								<datalist id="namesDataList1"></datalist>
+							</div>
+							<div class="form-group">
+								<label class="sr-only" for="inputClient1">Client</label> <input
+									type="text" class="form-control" id="inputClient1"
+									placeholder="Client">
+							</div>
+							<div class="form-group">
+
+								<a id="searchLink1" href="searchProject.html"
+									onclick="onSearchClick1()" class="btn btn-primary"
+									style="margin: 10px; width: 100px;">Search</a>
+
+								<button type="button" class="btn btn-primary" id="reset1"
+									style="margin: 10px; width: 100px;">Reset</button>
+							</div>
+						</form>
+						<br />
+						<button type="button" class="btn btn-link"
+							onclick="advSearchClick()">Advance Search</button>
+
+					</div>
+
+
+					<div class="panel-body" style="margin-top: 30px" id="div2">
+
+
+						<form class="form-inline" id="form2">
+							<div class="form-group">
+								<label class="sr-only" for="inputName2">Name</label> <input
+									type="text" class="form-control" id="inputName2"
+									list="namesDataList2" placeholder="Project Name">
+								<datalist id="namesDataList2"></datalist>
+							</div>
+							<div class="form-group">
+								<label class="sr-only" for="inputClient2">Client</label> <input
+									type="text" class="form-control" id="inputClient2"
+									placeholder="Client">
+							</div>
+							<br />
+							<div class="form-group">
+								<label class="sr-only" for="inputStatus2">Status</label> <input
+									type="text" class="form-control" id="inputStatus2"
+									placeholder="Status">
+							</div>
+							<div class="form-group">
+								<label class="sr-only" for="inputEmpName2">employeeName</label>
+								<input type="text" class="form-control" id="inputEmpName2"
+									placeholder="Employee Name">
+							</div>
+							<div class="form-group">
+								<a id="searchLink2" href="searchProject.html"
+									onclick="onSearchClick2()" class="btn btn-primary"
+									style="margin: 10px; width: 100px;">Search</a>
+
+								<button type="button" class="btn btn-primary" id="reset2"
+									style="margin: 10px; width: 100px;">Reset</button>
+							</div>
+						</form>
+						<br />
+						<button type="button" onclick="basicSearchClick()"
+							class="btn btn-link">Basic Search</button>
+					</div>
+				</div>
+				<!-- START THE FEATURETTES -->
+				<div class="panel panel-primary"
+					style="background-color: #FAFAFA; box-shadow: inset 1px -1px 1px #444, inset -1px 1px 1px #444;">
+					<div class="panel-heading">
+						<h4>Result</h4>
+					</div>
+					<div class="panel-body">
+						<div id="prjDiv"></div>
+					</div>
+
+				</div>
+
+				<!-- /END THE FEATURETTES -->
+			</div>
+			<br /> <br />
+		</div>
+	</div>
+
+	<!-- FOOTER -->
+	<div id="footer"></div>
+
+
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Employee Details</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+<script src="js/bootstrap.min.js"></script>
+
+<script>
+$(document).ready(function() {
+	$("#header").load("header.html"); 
+	$("#footer").load("footer.html");
+	
+	var empID = window.location.search.substring(4);
+	
+	jQuery.ajax({
+    	url:"http://10.9.220.19:8080/prj-initworkmatrix/rest/employees/" + empID,
+		type: "GET",
+        dataType: "json",
+		contentType: "application/json;charset=utf-8",
+		crossDomain: true,
+		beforeSend: function (request) {
+            request.setRequestHeader("apikey", 'iwm-123');
+        },		
+        success: function(data) {
+            				
+        	$('#empID').append(data.idemployee);
+			$('#empName').append(data.name);
+			$('#empAddress').append(data.address);
+			$('#empEmail').append(data.email);
+			$('#empDOB').append(data.dob);
+			$('#empGender').append(data.gender);
+			$('#empDepartment').append(data.department);
+			$('#empBranch').append(data.branch);
+			$('#empPosition').append(data.position);
+
+			if(data.contactno==null){
+				$('#empContactno').append("-");
+			}
+			else{
+				$('#empContactno').append(data.contactno);
+			}
+			if(data.nationality==null){
+				$('#empNationality').append("-");
+			}
+			else{
+				$('#empNationality').append(data.nationality);
+			}						
+
+			$('#empProjects').append("<ul id='prjList'></ul>");
+			$(data.projectResource.links).each(function(index) {            	 
+           	 var str=data.projectResource.links[index].href;
+       		 var id = str.substring(str.lastIndexOf('/') + 1);
+       		 $("#prjList").append("<li><a href='prjDetail.html?id=" + id + "'>" + data.projectResource.links[index].name+"</a></li>");
+       		 $("#prjList").addClass("list-group");
+       		 $("#prjList").append("<br>");
+   		        		                                       
+           });
+
+			if(data.name=="Amanpreet" || data.name=="Amanpreet Kaur Bhatia"){
+				$("#empPic").attr("src","images/employees/aman1.jpg");
+			}
+
+			else if(data.name=="Prabhjot"){
+				$("#empPic").attr("src","images/employees/prabh1.jpg");
+			}
+
+			else if(data.name=="Daniel Schley"){
+				$("#empPic").attr("src","images/employees/daniel.png");
+			}
+
+			else{
+				if(data.gender=="F"){
+					$("#empPic").attr("src","images/employees/female.jpg");
+				}
+				else{
+					$("#empPic").attr("src","images/employees/male.jpg");
+				}
+			}
+						
+        }       
+     });
+});
+
+</script>
+
+</head>
+<body>
+	<div id="header"></div>	
+	
+		<div class="col-md-2">
+			<img class="img-circle" id="empPic" alt="Employee Pic" src="images/employees/male.jpg">		
+		</div>
+		<div class="col-md-1">
+		</div>
+    	<div class="panel panel-primary panel-body col-md-6" style="box-shadow: 10px 10px 5px #888888; border-radius: 25px">
+			<div class="panel-heading">
+				<h3 id="empName" style="font-weight:bold"></h3>				
+			</div>			 
+			<div>			 				
+				<div class="col-md-6">
+				  <h5><b>Email</b></h5>
+				</div>				
+				<div class="col-md-6">
+				  <h5 id="empEmail"></h5>
+				</div>				
+				<div class="col-md-6">
+				  <h5><b>Address</b></h5>
+				</div>
+				<div class="col-md-6">
+				  <h5 id="empAddress"></h5>
+				</div>
+				<div class="col-md-6">
+				  <h5><b>Contact Number</b></h5>
+				</div>
+				<div class="col-md-6">
+				  <h5 id="empContactno"></h5>
+				</div>
+				<div class="col-md-6">
+				  <h5><b>Date of Birth</b></h5>
+				</div>
+				<div class="col-md-6">
+				  <h5 id="empDOB"></h5>
+				</div>
+				<div class="col-md-6">
+				  <h5><b>Nationality</b></h5>
+				</div>
+				<div class="col-md-6">
+				  <h5 id="empNationality"></h5>
+				</div>
+				<div class="col-md-6">
+				  <h5><b>Department</b></h5>
+				</div>
+				<div class="col-md-6">
+				  <h5 id="empDepartment"></h5>
+				</div>
+				<div class="col-md-6">
+				  <h5><b>Branch</b></h5>
+				</div>
+				<div class="col-md-6">
+				  <h5 id="empBranch"></h5>
+				</div>
+				<div class="col-md-6">
+				  <h5><b>Position</b></h5>
+				</div>
+				<div class="col-md-6">
+				  <h5 id="empPosition"></h5>
+				</div>
+				<div class="col-md-6">
+				  <h5><b>Projects</b></h5>
+				</div>
+				<div class="col-md-6">
+				  <h5 id="empProjects">				  	
+				  </h5>
+				</div>			
+			 </div>
+			 			   
+		</div>
+		<div class="col-md-3">
+		</div>	
+	
+	<div id="footer" style="clear: both;"></div>	
+</body>
+</html>
